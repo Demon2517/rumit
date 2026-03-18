@@ -1,24 +1,24 @@
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import CustomLogin from './Components/CustomLogin';
+import { Route , Routes} from 'react-router-dom';
+import PrivateRoutes from './routes/PrivateRoutes'
+
+import AdminHome from './Admin/AdminHome';
+import AssistantHome from './Assistant/AssistantHome';
+import DoctorHome from './Doctor/DoctorHome';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <Routes>
+      <Route path='/' element={<CustomLogin />}></Route>
+      <Route path='/AdminHome' element={<PrivateRoutes role={"Admin"}><AdminHome /></PrivateRoutes>}></Route>
+      <Route path='/AssistantHome' element={<PrivateRoutes role={"Assistant"}><AssistantHome /></PrivateRoutes>}></Route>
+      <Route path='/DoctorHome' element={<PrivateRoutes role={"Doctor"}><DoctorHome /></PrivateRoutes>}></Route>
+    </Routes>
+    {/* <Login></Login> */}
+    </>
   );
 }
 
