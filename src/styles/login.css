@@ -1,0 +1,167 @@
+/* Full screen background */
+.login-container {
+  height: 100vh;
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative circles */
+.circle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+.one {
+  width: 200px;
+  height: 200px;
+  top: 10%;
+  left: 15%;
+}
+
+.two {
+  width: 300px;
+  height: 300px;
+  bottom: 10%;
+  right: 10%;
+}
+
+/* Glass card */
+.login-card {
+  width: 350px;
+  padding: 40px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  color: #fff;
+  text-align: center;
+}
+
+/* Title */
+.title {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* Input style */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+}
+
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  color: gray;
+  font-size: 14px;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+/* Floating label effect */
+.input-group input:focus + label,
+.input-group input:valid + label {
+  top: -8px;
+  font-size: 12px;
+  color: #090909;
+}
+
+/* Remember Me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+.remember-me input {
+  cursor: pointer;
+}
+
+.remember-me label {
+  cursor: pointer;
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #fff;
+  color: #0072ff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.login-btn:hover {
+  background: #d0cfcf;
+}
+
+/* Extra text */
+.extra {
+  margin-top: 15px;
+  font-size: 13px;
+}
+
+.extra span {
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Toast Container */
+.toast-box {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  z-index: 999;
+  animation: slideIn 0.4s ease;
+}
+
+/* Types */
+.toast-box.success {
+  background-color: #28a745;
+}
+
+.toast-box.danger {
+  background-color: #dc3545;
+}
+
+/* Animation */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
