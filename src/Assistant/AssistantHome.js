@@ -13,23 +13,6 @@ const AssistantHome = () => {
 
     setLoading(true);
 
-    try {
-      // Call backend logout endpoint
-      const apiUrl = "http://localhost/omdentalclinic/api/admin_logout.php";
-
-      await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: JSON.parse(localStorage.getItem("user") || "null"),
-        }),
-      });
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-
     // Clear all local storage
     localStorage.removeItem("islogin");
     localStorage.removeItem("user");

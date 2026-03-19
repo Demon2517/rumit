@@ -23,17 +23,6 @@ const CustomLogin = () => {
   const showToast = (message, type) => {
     setToast({message, type, show: true });
   };
-  //   const [showToast, setShowToast] = useState(false);
-  //   const [toastMsg, setToastMsg] = useState("");
-  //   const [toastType, setToastType] = useState("danger");
-
-  // Auto-hide toast
-//   useEffect(() => {
-//     if (showToast) {
-//       const timer = setTimeout(() => showToast(false), 3000);
-//       return () => clearTimeout(timer);
-//     }
-//   }, [showToast]);
 
   // Auto-login if token exists
   useEffect(() => {
@@ -42,10 +31,10 @@ const CustomLogin = () => {
       const loginType = localStorage.getItem("logintype");
       const route =
         loginType === "Admin"
-          ? "/AdminHome"
+          ? "/admin"
           : loginType === "Assistant"
-            ? "/AssistantHome"
-            : "/DoctorHome";
+            ? "/assistant"
+            : "/doctor";
       navigate(route);
     }
   }, [navigate]);
@@ -126,10 +115,10 @@ const CustomLogin = () => {
         setTimeout(() => {
           const route =
             userRole === "Admin"
-              ? "/AdminHome"
+              ? "/admin"
               : userRole === "Assistant"
-                ? "/AssistantHome"
-                : "/DoctorHome";
+                ? "/assistant"
+                : "/doctor";
           navigate(route);
         }, 1000);
       } else {
