@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { BSModal, DeleteModal, Avatar, Field, PageHeader, Loading, EmptyState, apiFetch } from "../components/helpers";
 
 const STATUSES     = ["Pending","Confirmed","In Progress","Completed","Cancelled"];
-const STATUS_BADGE = { Pending:"text-bg-info", Confirmed:"text-bg-primary", "In Progress":"text-bg-warning", Completed:"text-bg-success", Cancelled:"text-bg-danger" };
+// const STATUS_BADGE = { Pending:"text-bg-info", Confirmed:"text-bg-primary", "In Progress":"text-bg-warning", Completed:"text-bg-success", Cancelled:"text-bg-danger" };
 const EMPTY_FORM   = { appointment_id: null, patient_name: "", doctor_name: "", appointment_date: "", appointment_time: "", treatment: "", notes: "", status: "Pending" };
 
 export default function Appointments() {

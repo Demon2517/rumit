@@ -8,8 +8,6 @@
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
-const BASE_URL = "http://localhost/your-project/api";
-
 const weeklyData = [
   { day: "Mon", appointments: 18 }, { day: "Tue", appointments: 24 },
   { day: "Wed", appointments: 16 }, { day: "Thu", appointments: 28 },
@@ -106,7 +104,7 @@ export default function AdminHome() {
             </svg>
           </div>
           <div>
-            <h5 className="mb-0 fw-bold" style={{ color: "#0A1628" }}>BrightSmile Dental</h5>
+            <h5 className="mb-0 fw-bold" style={{ color: "#0A1628" }}>OM Dental</h5>
             <small className="text-muted">Admin Dashboard</small>
           </div>
         </div>

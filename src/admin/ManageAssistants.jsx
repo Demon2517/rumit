@@ -23,15 +23,14 @@ export default function ManageAssistants() {
   const [error,       setError]       = useState("");
   const [success,     setSuccess]     = useState("");
 
-  const load = async () => {
+const load = async () => {
     setLoading(true);
     try {
-      const json = await apiFetch("assistants.php?action=list");
+      const json = await apiFetch(`${process.env.REACT_APP_GET_ALL_ASSISTANT}`);
       if (json.status) setAssistants(json.data || []);
     } catch { setAssistants([]); }
     setLoading(false);
   };
-
   useEffect(() => { load(); }, []);
 
   const openAdd  = () => { setForm(EMPTY_FORM); setError(""); setModalOpen(true); };
@@ -44,12 +43,12 @@ export default function ManageAssistants() {
     if (!form.assistant_id) {
       if (!form.email.trim())    return setError("Email is required");
       if (!form.password.trim()) return setError("Password is required");
-      if (form.password.length < 8) return setError("Password must be at least 8 characters");
+      if (form.password.length < 6) return setError("Password must be at least 6 characters");
     }
     setSubmitting(true); setError("");
     try {
       const isEdit = !!form.assistant_id;
-      const json = await apiFetch(`assistants.php?action=${isEdit ? "update" : "add"}`, {
+      const json = await apiFetch(`${isEdit ? `${process.env.REACT_APP_UPDATE_ASSISTANT}` : `${process.env.REACT_APP_ADD_ASSISTANT}`}`, {
         method: isEdit ? "PUT" : "POST", body: form,
       });
       if (json.status) { setModalOpen(false); setSuccess(isEdit ? "Assistant updated!" : "Assistant added!"); load(); setTimeout(() => setSuccess(""), 3000); }
@@ -60,14 +59,14 @@ export default function ManageAssistants() {
 
   const handleDelete = async () => {
     try {
-      const json = await apiFetch("assistants.php?action=delete", { method: "DELETE", body: { assistant_id: deleteId } });
+      const json = await apiFetch(`${process.env.REACT_APP_DELETE_ASSISTANT}`, { method: "DELETE", body: { assistant_id: deleteId } });
       if (json.status) { setDeleteId(null); load(); }
     } catch {}
   };
 
   const handleStatusChange = async (newStatus) => {
     try {
-      const json = await apiFetch("assistants.php?action=update_status", { method: "PUT", body: { assistant_id: statusModal.assistant_id, status: newStatus } });
+      const json = await apiFetch(`${process.env.REACT_APP_UPDATE_ASSISTANT_STATUS}`, { method: "PUT", body: { assistant_id: statusModal.assistant_id, status: newStatus } });
       if (json.status) { setStatusModal(null); load(); }
     } catch {}
   };
@@ -114,7 +113,7 @@ export default function ManageAssistants() {
                       </td>
                       <td className="px-4 text-muted" style={{ fontSize: 13 }}>{asst.specialization}</td>
                       <td className="px-4 text-muted" style={{ fontSize: 12, fontFamily: "monospace" }}>{asst.phone}</td>
-                      <td className="px-4 text-muted" style={{ fontSize: 13 }}>{asst.experience || "—"}</td>
+                      <td className="px-4 text-muted" style={{ fontSize: 13 }}>{asst.experience ?`${asst.experience} yrs` : "—"}</td>
                       <td className="px-4 text-muted" style={{ fontSize: 13 }}>{asst.qualifications || "—"}</td>
                       <td className="px-4">
                         <span
@@ -128,8 +127,8 @@ export default function ManageAssistants() {
                       </td>
                       <td className="px-4">
                         <div className="d-flex gap-2">
-                          <button className="btn btn-sm fw-bold" style={{ background: "#E6F1FB", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(asst)}>Edit</button>
-                          <button className="btn btn-sm fw-bold" style={{ background: "#FCEBEB", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(asst.assistant_id)}>Delete</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#87bae9", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(asst)}>Edit</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#f1b6b6", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(asst.assistant_id)}>Delete</button>
                         </div>
                       </td>
                     </tr>
@@ -147,11 +146,11 @@ export default function ManageAssistants() {
           <div className="col-12 col-md-6"><Field label="Full Name"><input className="form-control" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Neha Sharma" /></Field></div>
           {!form.assistant_id && (<>
             <div className="col-12 col-md-6"><Field label="Email"><input className="form-control" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="e.g. neha@brightsmile.in" /></Field></div>
-            <div className="col-12 col-md-6"><Field label="Password"><input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" /></Field></div>
+            <div className="col-12 col-md-6"><Field label="Password"><input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 6 characters" /></Field></div>
           </>)}
           <div className="col-12 col-md-6"><Field label="Phone"><input className="form-control" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+91 98765 43210" /></Field></div>
           <div className="col-12 col-md-6"><Field label="Specialization"><input className="form-control" value={form.specialization} onChange={e => setForm({ ...form, specialization: e.target.value })} placeholder="e.g. Dental Hygiene" /></Field></div>
-          <div className="col-12 col-md-6"><Field label="Experience"><input className="form-control" value={form.experience} onChange={e => setForm({ ...form, experience: e.target.value })} placeholder="e.g. 3 years" /></Field></div>
+          <div className="col-12 col-md-6"><Field label="Experience"><input className="form-control" type="number" value={form.experience} onChange={e => setForm({ ...form, experience: e.target.value })} placeholder="e.g. 3 years" /></Field></div>
           <div className="col-12 col-md-6"><Field label="Qualifications"><input className="form-control" value={form.qualifications} onChange={e => setForm({ ...form, qualifications: e.target.value })} placeholder="e.g. BDH" /></Field></div>
         </div>
         {error && <div className="alert alert-danger py-2 px-3 mt-2 mb-0" style={{ fontSize: 12 }}>{error}</div>}
@@ -170,8 +169,8 @@ export default function ManageAssistants() {
             const isCurrent = statusModal?.current === s;
             return (
               <button key={s} onClick={() => !isCurrent && handleStatusChange(s)}
-                className="btn d-flex justify-content-between align-items-center fw-bold"
-                style={{ background: isCurrent ? "#f0f0f0" : "#F8FAFC", opacity: isCurrent ? .6 : 1, fontSize: 13 }}
+                className="btn d-flex justify-content-between align-items-center fw-bold btm-hover"
+                style={{ background: isCurrent ? "#f0f0f0" : "#F8FAFC", opacity: isCurrent ? .6 : 1, fontSize: 13}}
                 disabled={isCurrent}>
                 <span>{STATUS_LABEL[s]}</span>
                 {isCurrent && <span className={`badge ${STATUS_BADGE[s]}`}>Current</span>}

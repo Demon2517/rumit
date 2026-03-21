@@ -25,7 +25,7 @@ export default function ManageDoctors() {
   const load = async () => {
     setLoading(true);
     try {
-      const json = await apiFetch("doctors.php?action=list");
+      const json = await apiFetch(`${process.env.REACT_APP_GET_ALL_DOCTOR}`);
       if (json.status) setDoctors(json.data || []);
     } catch { setDoctors([]); }
     setLoading(false);
@@ -42,12 +42,12 @@ export default function ManageDoctors() {
     if (!form.doctor_id) {
       if (!form.email.trim())    return setError("Email is required");
       if (!form.password.trim()) return setError("Password is required");
-      if (form.password.length < 8) return setError("Password must be at least 8 characters");
+      if (form.password.length < 6) return setError("Password must be at least 6 characters");
     }
     setSubmitting(true); setError("");
     try {
       const isEdit = !!form.doctor_id;
-      const json = await apiFetch(`doctors.php?action=${isEdit ? "update" : "add"}`, {
+      const json = await apiFetch(`${isEdit ? `${process.env.REACT_APP_UPDATE_DOCTOR}` : `${process.env.REACT_APP_ADD_DOCTOR}`}`, {
         method: isEdit ? "PUT" : "POST", body: form,
       });
       if (json.status) { setModalOpen(false); setSuccess(isEdit ? "Doctor updated!" : "Doctor added!"); load(); setTimeout(() => setSuccess(""), 3000); }
@@ -58,14 +58,14 @@ export default function ManageDoctors() {
 
   const handleDelete = async () => {
     try {
-      const json = await apiFetch("doctors.php?action=delete", { method: "DELETE", body: { doctor_id: deleteId } });
+      const json = await apiFetch(`${process.env.REACT_APP_DELETE_DOCTOR}`, { method: "DELETE", body: { doctor_id: deleteId } });
       if (json.status) { setDeleteId(null); load(); }
     } catch {}
   };
 
   const handleStatusChange = async (newStatus) => {
     try {
-      const json = await apiFetch("doctors.php?action=update_status", { method: "PUT", body: { doctor_id: statusModal.doctor_id, status: newStatus } });
+      const json = await apiFetch(`${process.env.REACT_APP_UPDATE_DOCTOR_STATUS}`, { method: "PUT", body: { doctor_id: statusModal.doctor_id, status: newStatus } });
       if (json.status) { setStatusModal(null); load(); }
     } catch {}
   };
@@ -125,8 +125,8 @@ export default function ManageDoctors() {
                       </td>
                       <td className="px-4">
                         <div className="d-flex gap-2">
-                          <button className="btn btn-sm fw-bold" style={{ background: "#E6F1FB", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(doc)}>Edit</button>
-                          <button className="btn btn-sm fw-bold" style={{ background: "#FCEBEB", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(doc.doctor_id)}>Delete</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#87bae9", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(doc)}>Edit</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#f1b6b6", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(doc.doctor_id)}>Delete</button>
                         </div>
                       </td>
                     </tr>
@@ -144,7 +144,7 @@ export default function ManageDoctors() {
           <div className="col-12 col-md-6"><Field label="Full Name"><input className="form-control" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="e.g. Dr. Arjun Mehta" /></Field></div>
           {!form.doctor_id && (<>
             <div className="col-12 col-md-6"><Field label="Email"><input className="form-control" type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="e.g. arjun@brightsmile.in" /></Field></div>
-            <div className="col-12 col-md-6"><Field label="Password"><input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" /></Field></div>
+            <div className="col-12 col-md-6"><Field label="Password"><input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 6 characters" /></Field></div>
           </>)}
           <div className="col-12 col-md-6"><Field label="Specialization"><input className="form-control" value={form.specialization} onChange={e => setForm({ ...form, specialization: e.target.value })} placeholder="e.g. Orthodontist" /></Field></div>
           <div className="col-12 col-md-6"><Field label="Experience (years)"><input className="form-control" type="number" value={form.experience_years} onChange={e => setForm({ ...form, experience_years: e.target.value })} placeholder="e.g. 5" /></Field></div>
@@ -163,7 +163,6 @@ export default function ManageDoctors() {
 
       {/* Status Change Modal */}
       <BSModal open={!!statusModal} title="Change Doctor Status" onClose={() => setStatusModal(null)}>
-        <p className="text-muted mb-3" style={{ fontSize: 13 }}>Select a new status:</p>
         <div className="d-flex flex-column gap-2 mb-3">
           {STATUSES.map(s => {
             const isCurrent = statusModal?.current === s;

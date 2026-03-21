@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from "react";
-import { BSModal, DeleteModal, Avatar, Field, PageHeader, Loading, EmptyState, apiFetch } from "../components/helpers";
+import { BSModal, DeleteModal, Avatar, Field, PageHeader, Loading, EmptyState, apiFetch, AlertModal } from "../components/helpers";
 
 const ROLES        = ["admin", "superadmin", "moderator"];
 const ROLE_BADGE   = { superadmin: "text-bg-primary", admin: "text-bg-success", moderator: "text-bg-info" };
@@ -20,11 +20,12 @@ export default function ManageAdmins() {
   const [submitting, setSubmitting] = useState(false);
   const [error,      setError]      = useState("");
   const [success,    setSuccess]    = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
 
   const load = async () => {
     setLoading(true);
     try {
-      const json = await apiFetch("admins.php?action=all");
+      const json = await apiFetch(`${process.env.REACT_APP_GET_ALL_ADMINS}`);
       if (json.status) setAdmins(json.data || []);
     } catch { setAdmins([]); }
     setLoading(false);
@@ -39,11 +40,11 @@ export default function ManageAdmins() {
     if (!form.name.trim())  return setError("Name is required");
     if (!form.email.trim()) return setError("Email is required");
     if (!form.admin_id && !form.password) return setError("Password is required for new admin");
-    if (form.password && form.password.length < 8) return setError("Password must be at least 8 characters");
+    if (form.password && form.password.length < 6) return setError("Password must be at least 6 characters");
     setSubmitting(true); setError("");
     try {
       const isEdit = !!form.admin_id;
-      const json = await apiFetch(`admins.php?action=${isEdit ? "update_profile" : "create"}`, {
+      const json = await apiFetch(`${isEdit ? `${process.env.REACT_APP_UPDATE_ADMIN_PROFILE}` : "create"}`, {
         method: isEdit ? "PUT" : "POST",
         body: isEdit ? { admin_id: form.admin_id, name: form.name, email: form.email }
                      : { name: form.name, email: form.email, password: form.password, role: form.role },
@@ -56,7 +57,11 @@ export default function ManageAdmins() {
 
   const handleDelete = async () => {
     try {
-      const json = await apiFetch("admins.php?action=delete", { method: "DELETE", body: { admin_id: deleteId } });
+      if (admins.length === 1) {
+        setAlertOpen(true);
+        setDeleteId(null);
+      }
+      const json = await apiFetch(`${process.env.delete_admin.php}`, { method: "DELETE", body: { admin_id: deleteId } });
       if (json.status) { setDeleteId(null); load(); }
     } catch {}
   };
@@ -110,8 +115,8 @@ export default function ManageAdmins() {
                       </td>
                       <td className="px-4">
                         <div className="d-flex gap-2">
-                          <button className="btn btn-sm fw-bold" style={{ background: "#E6F1FB", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(admin)}>Edit</button>
-                          <button className="btn btn-sm fw-bold" style={{ background: "#FCEBEB", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(admin.admin_id)}>Delete</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#87bae9", color: "#042C53", fontSize: 11 }} onClick={() => openEdit(admin)}>Edit</button>
+                          <button className="btn btn-sm fw-bold" style={{ background: "#f1b6b6", color: "#501313", fontSize: 11 }} onClick={() => setDeleteId(admin.admin_id)}>Delete</button>
                         </div>
                       </td>
                     </tr>
@@ -140,7 +145,7 @@ export default function ManageAdmins() {
             <>
               <div className="col-12">
                 <Field label="Password">
-                  <input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" />
+                  <input className="form-control" type="password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 6 characters" />
                 </Field>
               </div>
               <div className="col-12">
@@ -163,6 +168,13 @@ export default function ManageAdmins() {
       </BSModal>
 
       <DeleteModal open={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={handleDelete} />
+       <AlertModal
+        open={alertOpen}
+        title="Warning"
+        message="At least one admin must remain"
+        type="danger"
+        onClose={() => setAlertOpen(false)}
+        />  
     </div>
   );
 }
