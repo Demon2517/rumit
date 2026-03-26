@@ -41,6 +41,12 @@ const MENUS = {
       ],
     },
     {
+      label: "Inventory",
+      items: [
+        { id: "inventory", label: "Inventory Manage", icon: "📦", badge: null },
+      ],
+    },
+    {
       label: "Insights",
       items: [
         { id: "reports",            label: "Reports",             icon: "📊", badge: null },

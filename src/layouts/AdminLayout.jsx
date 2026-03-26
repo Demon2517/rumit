@@ -12,25 +12,26 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
 const ROUTES = {
-  dashboard:    "/admin",
+  dashboard: "/admin",
   appointments: "/admin/appointments",
-  patients:     "/admin/patients",
-  admins:       "/admin/admins",
-  doctors:      "/admin/doctors",
-  assistants:   "/admin/assistants",
-  treatments:   "/admin/treatments",
-  billing:      "/admin/billing",
-  reports:      "/admin/reports",
-  settings:     "/admin/settings",
+  patients: "/admin/patients",
+  admins: "/admin/admins",
+  doctors: "/admin/doctors",
+  assistants: "/admin/assistants",
+  treatments: "/admin/treatments",
+  billing: "/admin/billing",
+  reports: "/admin/reports",
+  settings: "/admin/settings",
+  inventory: "/admin/inventory",
 };
 
 const PATH_TO_ID = Object.fromEntries(
-  Object.entries(ROUTES).map(([id, path]) => [path, id])
+  Object.entries(ROUTES).map(([id, path]) => [path, id]),
 );
 
 export default function AdminLayout() {
-  const navigate  = useNavigate();
-  const location  = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const activeMenu = PATH_TO_ID[location.pathname] || "dashboard";
 
@@ -82,17 +83,28 @@ export default function AdminLayout() {
 
       {/* Main content */}
       <div className="main-content">
-
         {/* Mobile topbar */}
-        <nav className="navbar d-lg-none px-3 py-2" style={{ background: "#0A1628", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+        <nav
+          className="navbar d-lg-none px-3 py-2"
+          style={{
+            background: "#0A1628",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
           <button
             className="btn btn-sm me-3"
-            style={{ background: "rgba(255,255,255,0.1)", border: "none", color: "#fff" }}
+            style={{
+              background: "rgba(255,255,255,0.1)",
+              border: "none",
+              color: "#fff",
+            }}
             onClick={() => setSidebarOpen(true)}
           >
             ☰
           </button>
-          <span style={{ color: "#fff", fontWeight: 700, fontSize: "15px" }}>BrightSmile Dental</span>
+          <span style={{ color: "#fff", fontWeight: 700, fontSize: "15px" }}>
+            BrightSmile Dental
+          </span>
         </nav>
 
         <Outlet />
